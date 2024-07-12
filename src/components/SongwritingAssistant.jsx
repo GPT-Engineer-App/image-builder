@@ -3,9 +3,13 @@ import { Home, Settings, Info, User, Music, Edit, Layers, Sliders, CheckCircle, 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 const SongwritingAssistant = () => {
   const [activeSection, setActiveSection] = useState("Song Concept");
+  const [theme, setTheme] = useState("");
+  const [genre, setGenre] = useState("");
+  const [targetAudience, setTargetAudience] = useState("");
   const [songConcept, setSongConcept] = useState("");
   const [verse, setVerse] = useState("");
   const [chorus, setChorus] = useState("");
@@ -32,7 +36,33 @@ const SongwritingAssistant = () => {
         return (
           <div>
             <h2 className="text-xl font-semibold mb-4">Song Concept</h2>
+            <Label htmlFor="theme">Theme</Label>
+            <Input
+              id="theme"
+              placeholder="Enter the theme..."
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="mb-4"
+            />
+            <Label htmlFor="genre">Genre</Label>
+            <Input
+              id="genre"
+              placeholder="Enter the genre..."
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+              className="mb-4"
+            />
+            <Label htmlFor="targetAudience">Target Audience</Label>
+            <Input
+              id="targetAudience"
+              placeholder="Enter the target audience..."
+              value={targetAudience}
+              onChange={(e) => setTargetAudience(e.target.value)}
+              className="mb-4"
+            />
+            <Label htmlFor="songConcept">Song Concept</Label>
             <Textarea
+              id="songConcept"
               placeholder="Describe the song concept..."
               value={songConcept}
               onChange={(e) => setSongConcept(e.target.value)}
