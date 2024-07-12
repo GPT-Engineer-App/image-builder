@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@tanstack/react-query";
+import { fetchLyricsSuggestions, fetchChordProgressions, fetchViralityMetrics } from "@/lib/api";
 
 const SongwritingAssistant = () => {
   const [activeSection, setActiveSection] = useState("Song Concept");
@@ -18,6 +20,24 @@ const SongwritingAssistant = () => {
   const [outro, setOutro] = useState("");
   const [refinement, setRefinement] = useState("");
   const [automation, setAutomation] = useState("");
+
+  const { data: lyricsSuggestions, error: lyricsError } = useQuery({
+    queryKey: ["lyricsSuggestions", songConcept],
+    queryFn: () => fetchLyricsSuggestions(songConcept),
+    enabled: !!songConcept,
+  });
+
+  const { data: chordProgressions, error: chordError } = useQuery({
+    queryKey: ["chordProgressions", genre],
+    queryFn: () => fetchChordProgressions(genre),
+    enabled: !!genre,
+  });
+
+  const { data: viralityMetrics, error: viralityError } = useQuery({
+    queryKey: ["viralityMetrics", songConcept],
+    queryFn: () => fetchViralityMetrics(songConcept),
+    enabled: !!songConcept,
+  });
 
   const sections = [
     { title: "Song Concept", icon: <Music className="h-4 w-4" /> },
@@ -67,6 +87,17 @@ const SongwritingAssistant = () => {
               value={songConcept}
               onChange={(e) => setSongConcept(e.target.value)}
             />
+            {lyricsSuggestions && (
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold">Lyrics Suggestions</h3>
+                <ul>
+                  {lyricsSuggestions.map((suggestion, index) => (
+                    <li key={index}>{suggestion}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {lyricsError && <p className="text-red-500">Error fetching lyrics suggestions.</p>}
           </div>
         );
       case "Verse":
@@ -174,6 +205,28 @@ const SongwritingAssistant = () => {
       </aside>
       <main className="flex-1 bg-gray-800 text-white p-6 overflow-auto">
         {renderSectionContent()}
+        {chordProgressions && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold">Chord Progressions</h3>
+            <ul>
+              {chordProgressions.map((progression, index) => (
+                <li key={index}>{progression}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {chordError && <p className="text-red-500">Error fetching chord progressions.</p>}
+        {viralityMetrics && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold">Virality Metrics</h3>
+            <ul>
+              {viralityMetrics.map((metric, index) => (
+                <li key={index}>{metric}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {viralityError && <p className="text-red-500">Error fetching virality metrics.</p>}
       </main>
     </div>
   );
